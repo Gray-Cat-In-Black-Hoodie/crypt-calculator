@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Total Battle вљ”пёЏ РќРѕСЂРјС‹</title>
+    <title>Total Battle ⚔️ Нормы</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -54,7 +54,7 @@
             font-size: 1.4em;
         }
 
-        /* Р’РµСЂС…РЅСЏСЏ РїР°РЅРµР»СЊ */
+        /* Верхняя панель */
         .top-bar {
             display: flex;
             gap: 12px;
@@ -97,7 +97,7 @@
         .val-danger { color: var(--danger-color); }
         .val-success { color: var(--success-color); }
 
-        /* РРєРѕРЅРєРё-РєРЅРѕРїРєРё СЃРїСЂР°РІР° */
+        /* Иконки-кнопки справа */
         .actions-column {
             display: flex;
             flex-direction: column;
@@ -128,7 +128,7 @@
             cursor: not-allowed;
         }
 
-        /* РўР°Р±Р»РёС†Р° */
+        /* Таблица */
         .card {
             background: var(--card-bg);
             padding: 12px;
@@ -183,7 +183,7 @@
             font-size: 0.95em;
         }
 
-        /* РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РєРѕРїРёСЂРѕРІР°РЅРёРё */
+        /* Уведомление о копировании */
         .toast {
             visibility: hidden;
             min-width: 220px;
@@ -208,7 +208,7 @@
             opacity: 1;
         }
 
-        /* Р‘СЂРµРЅРґРёРЅРі / Р¤СѓС‚РµСЂ */
+        /* Брендинг / Футер */
         .footer-branding {
             display: flex;
             flex-direction: column;
@@ -243,82 +243,82 @@
 </head>
 <body>
 
-    <h2>Total Battle вљ”пёЏ РќРѕСЂРјС‹</h2>
+    <h2>Total Battle ⚔️ Нормы</h2>
 
-    <!-- Р’РµСЂС…РЅСЏСЏ РїР°РЅРµР»СЊ -->
+    <!-- Верхняя панель -->
     <div class="top-bar">
         <div class="stats-container">
             <div class="stat-box">
-                <div class="stat-label">РќР°Р±СЂР°РЅРѕ</div>
+                <div class="stat-label">Набрано</div>
                 <div class="stat-value" id="total-score">0</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label" id="status-label">РћСЃС‚Р°Р»РѕСЃСЊ</div>
+                <div class="stat-label" id="status-label">Осталось</div>
                 <div class="stat-value val-danger" id="status-value">900</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">РќРѕСЂРјР°</div>
+                <div class="stat-label">Норма</div>
                 <div class="stat-value" style="color: var(--accent-color);">900</div>
             </div>
         </div>
 
         <div class="actions-column">
-            <button class="icon-btn" onclick="toggleTheme()" title="РџРµСЂРµРєР»СЋС‡РёС‚СЊ С‚РµРјСѓ" id="theme-btn">рџЊ“</button>
-            <button class="icon-btn" onclick="exportToClipboard()" title="РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РѕС‚С‡С‘С‚">рџ“Ґ</button>
-            <button class="icon-btn" onclick="resetData()" title="РЎР±СЂРѕСЃРёС‚СЊ РІСЃРµ РґР°РЅРЅС‹Рµ">рџ—‘пёЏ</button>
+            <button class="icon-btn" onclick="toggleTheme()" title="Переключить тему" id="theme-btn">🌓</button>
+            <button class="icon-btn" onclick="exportToClipboard()" title="Скопировать отчёт">📥</button>
+            <button class="icon-btn" onclick="resetData()" title="Сбросить все данные">🗑️</button>
         </div>
     </div>
 
-    <!-- РўР°Р±Р»РёС†Р° -->
+    <!-- Таблица -->
     <div class="card">
         <table>
             <thead>
                 <tr>
-                    <th style="text-align: left; padding-left: 10px;">РЈСЂРѕРІРµРЅСЊ</th>
-                    <th>РћС‡РєРё</th>
-                    <th>РЎРѕР±СЂР°РЅРѕ</th>
-                    <th>Р’СЃРµРіРѕ</th>
+                    <th style="text-align: left; padding-left: 10px;">Уровень</th>
+                    <th>Очки</th>
+                    <th>Собрано</th>
+                    <th>Всего</th>
                 </tr>
             </thead>
             <tbody id="chest-table">
-                <!-- Р“РµРЅРµСЂРёСЂСѓРµС‚СЃСЏ С‡РµСЂРµР· JS -->
+                <!-- Генерируется через JS -->
             </tbody>
         </table>
     </div>
 
-    <!-- Р¤СѓС‚РµСЂ -->
+    <!-- Футер -->
     <div class="footer-branding">
         <img src="cat.jpg" alt="Gray Cat" class="footer-img" id="footerImg" onerror="this.style.display='none'">
         <span class="footer-caption">Gray Cat In Black Hoodie</span>
         <span class="footer-version">simple crypt calculator v.1</span>
     </div>
 
-    <div id="toast" class="toast">РћС‚С‡С‘С‚ СЃРєРѕРїРёСЂРѕРІР°РЅ РІ Р±СѓС„РµСЂ!</div>
+    <div id="toast" class="toast">Отчёт скопирован в буфер!</div>
 
 <script>
-    const TARGET_POINTS = 900; // РЎС‚Р°С‚РёС‡РЅР°СЏ РЅРѕСЂРјР° РєР»Р°РЅР°
+    const TARGET_POINTS = 900; // Статичная норма клана
 
     const chestsData = [
-        { category: 'РћР±С‹С‡РЅС‹Рµ СЃРєР»РµРїС‹', items: [
+        { category: 'Обычные склепы', items: [
             { id: 'norm_10', name: '10', points: 1 },
             { id: 'norm_15', name: '15', points: 2 },
             { id: 'norm_20', name: '20', points: 4 },
             { id: 'norm_25', name: '25', points: 5 }
         ]},
-        { category: 'Р РµРґРєРёРµ СЃРєР»РµРїС‹', items: [
+        { category: 'Редкие склепы', items: [
             { id: 'rare_10', name: '10', points: 5 },
             { id: 'rare_15', name: '15', points: 10 },
             { id: 'rare_20', name: '20', points: 15 },
             { id: 'rare_25', name: '25', points: 20 }
         ]},
-        { category: 'Р­РїРёС‡РµСЃРєРёРµ СЃРєР»РµРїС‹', items: [
+        { category: 'Эпические склепы', items: [
             { id: 'epic_15', name: '15', points: 15 },
             { id: 'epic_20', name: '20', points: 20 },
             { id: 'epic_25', name: '25', points: 25 },
             { id: 'epic_30', name: '30', points: 30 },
             { id: 'epic_35', name: '35', points: 35 }
         ]},
-        { category: 'Р¦РёС‚Р°РґРµР»Рё', items: [
+        { category: 'Цитадели', items: [
             { id: 'cit_10', name: '10', points: 3 },
             { id: 'cit_15', name: '15', points: 5 },
             { id: 'cit_20', name: '20', points: 10 },
@@ -380,11 +380,11 @@
         const statusValue = document.getElementById('status-value');
 
         if (diff > 0) {
-            statusLabel.innerText = 'РћСЃС‚Р°Р»РѕСЃСЊ';
+            statusLabel.innerText = 'Осталось';
             statusValue.innerText = diff;
             statusValue.className = 'stat-value val-danger';
         } else {
-            statusLabel.innerText = 'РР·Р±С‹С‚РѕРє';
+            statusLabel.innerText = 'Избыток';
             statusValue.innerText = `+${Math.abs(diff)}`;
             statusValue.className = 'stat-value val-success';
         }
@@ -404,7 +404,7 @@
     }
 
     function resetData() {
-        if (confirm('РўРѕС‡РЅРѕ СЃР±СЂРѕСЃРёС‚СЊ РІСЃРµ РІРІРµРґС‘РЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ?')) {
+        if (confirm('Точно сбросить все введённые значения?')) {
             chestsData.forEach(cat => {
                 cat.items.forEach(item => {
                     document.getElementById(item.id).value = 0;
@@ -415,14 +415,14 @@
         }
     }
 
-    /* Р›РѕРіРёРєР° СЌРєСЃРїРѕСЂС‚Р° РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР° */
+    /* Логика экспорта в буфер обмена */
     function exportToClipboard() {
         const totalScore = saveAndCalculate();
         const diff = TARGET_POINTS - totalScore;
-        const statusText = diff <= 0 ? `РќРѕСЂРјР° РІС‹РїРѕР»РЅРµРЅР° (+${Math.abs(diff)})` : `РћСЃС‚Р°Р»РѕСЃСЊ: ${diff}`;
+        const statusText = diff <= 0 ? `Норма выполнена (+${Math.abs(diff)})` : `Осталось: ${diff}`;
 
-        let text = `вљ”пёЏ *Total Battle вЂ” РЎР±РѕСЂ СЃСѓРЅРґСѓРєРѕРІ*\n`;
-        text += `рџ“Љ *Р’СЃРµРіРѕ РѕС‡РєРѕРІ:* ${totalScore} / ${TARGET_POINTS} (${statusText})\n\n`;
+        let text = `⚔️ *Total Battle — Сбор сундуков*\n`;
+        text += `📊 *Всего очков:* ${totalScore} / ${TARGET_POINTS} (${statusText})\n\n`;
 
         chestsData.forEach(cat => {
             let catText = '';
@@ -430,7 +430,7 @@
                 const input = document.getElementById(item.id);
                 const val = parseInt(input.value) || 0;
                 if (val > 0) {
-                    catText += `  вЂў РЈСЂРѕРІРµРЅСЊ ${item.name}: ${val} С€С‚. (${val * item.points} РѕС‡Рє.)\n`;
+                    catText += `  • Уровень ${item.name}: ${val} шт. (${val * item.points} очк.)\n`;
                 }
             });
             if (catText !== '') {
@@ -439,9 +439,9 @@
         });
 
         navigator.clipboard.writeText(text).then(() => {
-            showToast('РћС‚С‡С‘С‚ СЃРєРѕРїРёСЂРѕРІР°РЅ РІ Р±СѓС„РµСЂ!');
+            showToast('Отчёт скопирован в буфер!');
         }).catch(err => {
-            showToast('РћС€РёР±РєР° РєРѕРїРёСЂРѕРІР°РЅРёСЏ');
+            showToast('Ошибка копирования');
         });
     }
 
@@ -454,7 +454,7 @@
         }, 2500);
     }
 
-    /* Р›РѕРіРёРєР° С‚РµРјС‹ */
+    /* Логика темы */
     function initTheme() {
         const savedTheme = localStorage.getItem('tb_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -470,7 +470,7 @@
     }
 
     function updateThemeIcon(theme) {
-        document.getElementById('theme-btn').innerText = theme === 'light' ? 'вЂпёЏ' : 'рџЊ™';
+        document.getElementById('theme-btn').innerText = theme === 'light' ? '☀️' : '🌙';
     }
 
     window.onload = init;
