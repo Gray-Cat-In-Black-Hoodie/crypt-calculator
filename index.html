@@ -264,7 +264,7 @@
 
         <div class="actions-column">
             <button class="icon-btn" onclick="toggleTheme()" title="Переключить тему" id="theme-btn">🌓</button>
-            <button class="icon-btn" onclick="exportToClipboard()" title="Скопировать отчёт">📥</button>
+            <button class="icon-btn" onclick="exportToClipboard()" title="Скопировать для Excel">📥</button>
             <button class="icon-btn" onclick="resetData()" title="Сбросить все данные">🗑️</button>
         </div>
     </div>
@@ -293,7 +293,7 @@
         <span class="footer-version">simple crypt calculator v.1</span>
     </div>
 
-    <div id="toast" class="toast">Отчёт скопирован в буфер!</div>
+    <div id="toast" class="toast">Скопировано! Можно вставлять в Excel</div>
 
 <script>
     const TARGET_POINTS = 900; // Статичная норма клана
@@ -415,31 +415,30 @@
         }
     }
 
-    /* Логика экспорта в буфер обмена */
+    /* Логика экспорта в буфер обмена (Формат для Excel / Таблиц) */
     function exportToClipboard() {
         const totalScore = saveAndCalculate();
         const diff = TARGET_POINTS - totalScore;
-        const statusText = diff <= 0 ? `Норма выполнена (+${Math.abs(diff)})` : `Осталось: ${diff}`;
+        const statusText = diff <= 0 ? `Выполнена (+${Math.abs(diff)})` : `Осталось: ${diff}`;
 
-        let text = `⚔️ *Total Battle — Сбор сундуков*\n`;
-        text += `📊 *Всего очков:* ${totalScore} / ${TARGET_POINTS} (${statusText})\n\n`;
+        let text = `Категория\tУровень\tКоличество\tОчки за 1 шт.\tВсего очков\n`;
 
         chestsData.forEach(cat => {
-            let catText = '';
             cat.items.forEach(item => {
                 const input = document.getElementById(item.id);
                 const val = parseInt(input.value) || 0;
                 if (val > 0) {
-                    catText += `  • Уровень ${item.name}: ${val} шт. (${val * item.points} очк.)\n`;
+                    text += `${cat.category}\t${item.name}\t${val}\t${item.points}\t${val * item.points}\n`;
                 }
             });
-            if (catText !== '') {
-                text += `*${cat.category}:*\n` + catText;
-            }
         });
 
+        text += `\nИТОГО:\t\t\t\t${totalScore}\n`;
+        text += `НОРМА:\t\t\t\t${TARGET_POINTS}\n`;
+        text += `СТАТУС:\t\t\t\t${statusText}\n`;
+
         navigator.clipboard.writeText(text).then(() => {
-            showToast('Отчёт скопирован в буфер!');
+            showToast('Скопировано! Можно вставлять в Excel');
         }).catch(err => {
             showToast('Ошибка копирования');
         });
