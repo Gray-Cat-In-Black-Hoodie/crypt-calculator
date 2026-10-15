@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Battle вљ”пёЏ РќРѕСЂРјС‹</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --text-color: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --accent-color: #ffb74d;
+            --success-color: #81c784;
+            --danger-color: #e57373;
+            --input-bg: #2d2d2d;
+            --input-border: #444;
+            --header-bg: #2a2a2a;
+            --btn-bg: #2d2d2d;
+            --btn-hover: #3d3d3d;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --text-color: #212121;
+            --text-muted: #666666;
+            --accent-color: #f57c00;
+            --success-color: #2e7d32;
+            --danger-color: #c62828;
+            --input-bg: #f0f0f0;
+            --input-border: #ccc;
+            --header-bg: #e8e8e8;
+            --btn-bg: #e0e0e0;
+            --btn-hover: #d0d0d0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 650px;
+            margin: 20px auto;
+            padding: 12px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 16px;
+            font-size: 1.4em;
+        }
+
+        /* Р’РµСЂС…РЅСЏСЏ РїР°РЅРµР»СЊ */
+        .top-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 4px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.15em;
+            font-weight: bold;
+        }
+
+        .val-danger { color: var(--danger-color); }
+        .val-success { color: var(--success-color); }
+
+        /* РРєРѕРЅРєРё-РєРЅРѕРїРєРё СЃРїСЂР°РІР° */
+        .actions-column {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .icon-btn:hover:not(:disabled) {
+            background: var(--btn-hover);
+        }
+
+        .icon-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* РўР°Р±Р»РёС†Р° */
+        .card {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+        }
+
+        .category-header {
+            font-weight: bold;
+            padding: 6px 10px;
+            background: var(--header-bg);
+            color: var(--accent-color);
+            text-align: left;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px 4px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+
+        th {
+            color: var(--accent-color);
+            font-size: 0.85em;
+        }
+
+        td.type-cell {
+            text-align: left;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--text-color);
+            padding-left: 10px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        /* РЈРІРµРґРѕРјР»РµРЅРёРµ Рѕ РєРѕРїРёСЂРѕРІР°РЅРёРё */
+        .toast {
+            visibility: hidden;
+            min-width: 220px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px 14px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Р‘СЂРµРЅРґРёРЅРі / Р¤СѓС‚РµСЂ */
+        .footer-branding {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 24px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .footer-img {
+            width: 85px;
+            height: 85px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            margin-bottom: 8px;
+        }
+
+        .footer-caption {
+            font-weight: bold;
+            font-size: 0.95em;
+            color: var(--text-color);
+            margin-bottom: 2px;
+        }
+
+        .footer-version {
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Total Battle вљ”пёЏ РќРѕСЂРјС‹</h2>
+
+    <!-- Р’РµСЂС…РЅСЏСЏ РїР°РЅРµР»СЊ -->
+    <div class="top-bar">
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">РќР°Р±СЂР°РЅРѕ</div>
+                <div class="stat-value" id="total-score">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label" id="status-label">РћСЃС‚Р°Р»РѕСЃСЊ</div>
+                <div class="stat-value val-danger" id="status-value">900</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">РќРѕСЂРјР°</div>
+                <div class="stat-value" style="color: var(--accent-color);">900</div>
+            </div>
+        </div>
+
+        <div class="actions-column">
+            <button class="icon-btn" onclick="toggleTheme()" title="РџРµСЂРµРєР»СЋС‡РёС‚СЊ С‚РµРјСѓ" id="theme-btn">рџЊ“</button>
+            <button class="icon-btn" onclick="exportToClipboard()" title="РЎРєРѕРїРёСЂРѕРІР°С‚СЊ РѕС‚С‡С‘С‚">рџ“Ґ</button>
+            <button class="icon-btn" onclick="resetData()" title="РЎР±СЂРѕСЃРёС‚СЊ РІСЃРµ РґР°РЅРЅС‹Рµ">рџ—‘пёЏ</button>
+        </div>
+    </div>
+
+    <!-- РўР°Р±Р»РёС†Р° -->
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: left; padding-left: 10px;">РЈСЂРѕРІРµРЅСЊ</th>
+                    <th>РћС‡РєРё</th>
+                    <th>РЎРѕР±СЂР°РЅРѕ</th>
+                    <th>Р’СЃРµРіРѕ</th>
+                </tr>
+            </thead>
+            <tbody id="chest-table">
+                <!-- Р“РµРЅРµСЂРёСЂСѓРµС‚СЃСЏ С‡РµСЂРµР· JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Р¤СѓС‚РµСЂ -->
+    <div class="footer-branding">
+        <img src="cat.jpg" alt="Gray Cat" class="footer-img" id="footerImg" onerror="this.style.display='none'">
+        <span class="footer-caption">Gray Cat In Black Hoodie</span>
+        <span class="footer-version">simple crypt calculator v.1</span>
+    </div>
+
+    <div id="toast" class="toast">РћС‚С‡С‘С‚ СЃРєРѕРїРёСЂРѕРІР°РЅ РІ Р±СѓС„РµСЂ!</div>
+
+<script>
+    const TARGET_POINTS = 900; // РЎС‚Р°С‚РёС‡РЅР°СЏ РЅРѕСЂРјР° РєР»Р°РЅР°
+
+    const chestsData = [
+        { category: 'РћР±С‹С‡РЅС‹Рµ СЃРєР»РµРїС‹', items: [
+            { id: 'norm_10', name: '10', points: 1 },
+            { id: 'norm_15', name: '15', points: 2 },
+            { id: 'norm_20', name: '20', points: 4 },
+            { id: 'norm_25', name: '25', points: 5 }
+        ]},
+        { category: 'Р РµРґРєРёРµ СЃРєР»РµРїС‹', items: [
+            { id: 'rare_10', name: '10', points: 5 },
+            { id: 'rare_15', name: '15', points: 10 },
+            { id: 'rare_20', name: '20', points: 15 },
+            { id: 'rare_25', name: '25', points: 20 }
+        ]},
+        { category: 'Р­РїРёС‡РµСЃРєРёРµ СЃРєР»РµРїС‹', items: [
+            { id: 'epic_15', name: '15', points: 15 },
+            { id: 'epic_20', name: '20', points: 20 },
+            { id: 'epic_25', name: '25', points: 25 },
+            { id: 'epic_30', name: '30', points: 30 },
+            { id: 'epic_35', name: '35', points: 35 }
+        ]},
+        { category: 'Р¦РёС‚Р°РґРµР»Рё', items: [
+            { id: 'cit_10', name: '10', points: 3 },
+            { id: 'cit_15', name: '15', points: 5 },
+            { id: 'cit_20', name: '20', points: 10 },
+            { id: 'cit_25', name: '25', points: 15 },
+            { id: 'cit_30', name: '30', points: 20 }
+        ]}
+    ];
+
+    function init() {
+        initTheme();
+        const tbody = document.getElementById('chest-table');
+        tbody.innerHTML = '';
+
+        chestsData.forEach(cat => {
+            const catRow = document.createElement('tr');
+            catRow.innerHTML = `<td colspan="4" class="category-header">${cat.category}</td>`;
+            tbody.appendChild(catRow);
+
+            cat.items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="type-cell">${item.name}</td>
+                    <td>${item.points}</td>
+                    <td><input type="number" min="0" value="0" id="${item.id}" oninput="saveAndCalculate()"></td>
+                    <td id="score_${item.id}">0</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        loadData();
+    }
+
+    function saveAndCalculate() {
+        let totalScore = 0;
+
+        chestsData.forEach(cat => {
+            cat.items.forEach(item => {
+                const input = document.getElementById(item.id);
+                const val = parseInt(input.value) || 0;
+                const score = val * item.points;
+
+                document.getElementById(`score_${item.id}`).innerText = score;
+                totalScore += score;
+
+                localStorage.setItem(`tb_chest_${item.id}`, val);
+            });
+        });
+
+        updateSummary(totalScore);
+        return totalScore;
+    }
+
+    function updateSummary(totalScore) {
+        document.getElementById('total-score').innerText = totalScore;
+
+        const diff = TARGET_POINTS - totalScore;
+        const statusLabel = document.getElementById('status-label');
+        const statusValue = document.getElementById('status-value');
+
+        if (diff > 0) {
+            statusLabel.innerText = 'РћСЃС‚Р°Р»РѕСЃСЊ';
+            statusValue.innerText = diff;
+            statusValue.className = 'stat-value val-danger';
+        } else {
+            statusLabel.innerText = 'РР·Р±С‹С‚РѕРє';
+            statusValue.innerText = `+${Math.abs(diff)}`;
+            statusValue.className = 'stat-value val-success';
+        }
+    }
+
+    function loadData() {
+        chestsData.forEach(cat => {
+            cat.items.forEach(item => {
+                const savedVal = localStorage.getItem(`tb_chest_${item.id}`);
+                if (savedVal !== null) {
+                    document.getElementById(item.id).value = savedVal;
+                }
+            });
+        });
+
+        saveAndCalculate();
+    }
+
+    function resetData() {
+        if (confirm('РўРѕС‡РЅРѕ СЃР±СЂРѕСЃРёС‚СЊ РІСЃРµ РІРІРµРґС‘РЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ?')) {
+            chestsData.forEach(cat => {
+                cat.items.forEach(item => {
+                    document.getElementById(item.id).value = 0;
+                    localStorage.removeItem(`tb_chest_${item.id}`);
+                });
+            });
+            saveAndCalculate();
+        }
+    }
+
+    /* Р›РѕРіРёРєР° СЌРєСЃРїРѕСЂС‚Р° РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР° */
+    function exportToClipboard() {
+        const totalScore = saveAndCalculate();
+        const diff = TARGET_POINTS - totalScore;
+        const statusText = diff <= 0 ? `РќРѕСЂРјР° РІС‹РїРѕР»РЅРµРЅР° (+${Math.abs(diff)})` : `РћСЃС‚Р°Р»РѕСЃСЊ: ${diff}`;
+
+        let text = `вљ”пёЏ *Total Battle вЂ” РЎР±РѕСЂ СЃСѓРЅРґСѓРєРѕРІ*\n`;
+        text += `рџ“Љ *Р’СЃРµРіРѕ РѕС‡РєРѕРІ:* ${totalScore} / ${TARGET_POINTS} (${statusText})\n\n`;
+
+        chestsData.forEach(cat => {
+            let catText = '';
+            cat.items.forEach(item => {
+                const input = document.getElementById(item.id);
+                const val = parseInt(input.value) || 0;
+                if (val > 0) {
+                    catText += `  вЂў РЈСЂРѕРІРµРЅСЊ ${item.name}: ${val} С€С‚. (${val * item.points} РѕС‡Рє.)\n`;
+                }
+            });
+            if (catText !== '') {
+                text += `*${cat.category}:*\n` + catText;
+            }
+        });
+
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('РћС‚С‡С‘С‚ СЃРєРѕРїРёСЂРѕРІР°РЅ РІ Р±СѓС„РµСЂ!');
+        }).catch(err => {
+            showToast('РћС€РёР±РєР° РєРѕРїРёСЂРѕРІР°РЅРёСЏ');
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    /* Р›РѕРіРёРєР° С‚РµРјС‹ */
+    function initTheme() {
+        const savedTheme = localStorage.getItem('tb_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('tb_theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        document.getElementById('theme-btn').innerText = theme === 'light' ? 'вЂпёЏ' : 'рџЊ™';
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
