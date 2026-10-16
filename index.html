@@ -172,15 +172,54 @@
             padding-left: 10px;
         }
 
+        /* Блок счетчика (минус, инпут, плюс) */
+        .counter-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn-counter {
+            background: var(--btn-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-color);
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: background 0.1s, transform 0.1s;
+        }
+
+        .btn-counter:active {
+            transform: scale(0.92);
+            background: var(--btn-hover);
+        }
+
         input[type="number"] {
-            width: 60px;
-            padding: 5px;
+            width: 48px;
+            padding: 4px 2px;
             background: var(--input-bg);
             border: 1px solid var(--input-border);
             color: var(--text-color);
             text-align: center;
             border-radius: 4px;
-            font-size: 0.95em;
+            font-size: 1.1em;
+            font-weight: bold;
+            -moz-appearance: textfield;
+        }
+
+        /* Убираем стрелочки у инпута number */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         /* Уведомление о копировании */
@@ -290,7 +329,7 @@
     <div class="footer-branding">
         <img src="cat.jpg" alt="Gray Cat" class="footer-img" id="footerImg" onerror="this.style.display='none'">
         <span class="footer-caption">Gray Cat In Black Hoodie</span>
-        <span class="footer-version">simple crypt calculator v.1.1</span>
+        <span class="footer-version">simple crypt calculator v.1.2</span>
     </div>
 
     <div id="toast" class="toast">Скопировано! Можно вставлять в Excel</div>
@@ -343,7 +382,13 @@
                 tr.innerHTML = `
                     <td class="type-cell">${item.name}</td>
                     <td>${item.points}</td>
-                    <td><input type="number" min="0" value="0" id="${item.id}" oninput="saveAndCalculate()"></td>
+                    <td>
+                        <div class="counter-control">
+                            <button class="btn-counter" onclick="changeVal('${item.id}', -1)">−</button>
+                            <input type="number" min="0" value="0" id="${item.id}" oninput="saveAndCalculate()">
+                            <button class="btn-counter" onclick="changeVal('${item.id}', 1)">+</button>
+                        </div>
+                    </td>
                     <td id="score_${item.id}">0</td>
                 `;
                 tbody.appendChild(tr);
@@ -351,6 +396,15 @@
         });
 
         loadData();
+    }
+
+    function changeVal(id, delta) {
+        const input = document.getElementById(id);
+        let val = parseInt(input.value) || 0;
+        val += delta;
+        if (val < 0) val = 0;
+        input.value = val;
+        saveAndCalculate();
     }
 
     function saveAndCalculate() {
