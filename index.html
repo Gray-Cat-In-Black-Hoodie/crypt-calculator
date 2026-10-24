@@ -54,19 +54,25 @@
             font-size: 1.4em;
         }
 
-        /* Верхняя панель */
-        .top-bar {
+        /* Верхняя панель: слева блоки статистики + лог, справа кнопки */
+        .top-container {
             display: flex;
             gap: 12px;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 16px;
+        }
+
+        .stats-and-log {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .stats-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
-            flex-grow: 1;
         }
 
         .stat-box {
@@ -96,6 +102,21 @@
 
         .val-danger { color: var(--danger-color); }
         .val-success { color: var(--success-color); }
+
+        /* Строка состояния строго под тремя полями очков */
+        .status-log-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 0.78em;
+            font-weight: 600;
+            color: var(--accent-color);
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            letter-spacing: 0.2px;
+            word-break: break-word;
+        }
 
         /* Иконки-кнопки справа */
         .actions-column {
@@ -215,7 +236,6 @@
             -moz-appearance: textfield;
         }
 
-        /* Убираем стрелочки у инпута number */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -284,20 +304,26 @@
 
     <h2>Total Battle ⚔️ Сундуки</h2>
 
-    <!-- Верхняя панель -->
-    <div class="top-bar">
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-label">Набрано</div>
-                <div class="stat-value" id="total-score">0</div>
+    <!-- Верхняя панель управления и статистики -->
+    <div class="top-container">
+        <div class="stats-and-log">
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">Набрано</div>
+                    <div class="stat-value" id="total-score">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" id="status-label">Осталось</div>
+                    <div class="stat-value val-danger" id="status-value">900</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Норма</div>
+                    <div class="stat-value" style="color: var(--accent-color);">900</div>
+                </div>
             </div>
-            <div class="stat-box">
-                <div class="stat-label" id="status-label">Осталось</div>
-                <div class="stat-value val-danger" id="status-value">900</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Норма</div>
-                <div class="stat-value" style="color: var(--accent-color);">900</div>
+            <!-- Строка состояния ровно под тремя блоками очков -->
+            <div class="status-log-bar" id="last-event-log">
+                ПОСЛЕДНИЙ СУНДУК: Нет данных
             </div>
         </div>
 
@@ -329,7 +355,7 @@
     <div class="footer-branding">
         <img src="cat.jpg" alt="Gray Cat" class="footer-img" id="footerImg" onerror="this.style.display='none'">
         <span class="footer-caption">Gray Cat In Black Hoodie</span>
-        <span class="footer-version">simple crypt calculator v.1.2</span>
+        <span class="footer-version">simple crypt calculator v.1.3</span>
     </div>
 
     <div id="toast" class="toast">Скопировано! Можно вставлять в Excel</div>
@@ -398,12 +424,41 @@
         loadData();
     }
 
+    function getItemInfo(id) {
+        for (const cat of chestsData) {
+            for (const item of cat.items) {
+                if (item.id === id) {
+                    // Используем множественное число для категорий
+                    const catName = cat.category.toUpperCase();
+                    return `${catName} ${item.name}`;
+                }
+            }
+        }
+        return '';
+    }
+
     function changeVal(id, delta) {
         const input = document.getElementById(id);
         let val = parseInt(input.value) || 0;
         val += delta;
         if (val < 0) val = 0;
         input.value = val;
+
+        // Если нажат «плюс», фиксируем время и сундук во множественном числе
+        if (delta > 0) {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            const itemLabel = getItemInfo(id);
+            const logText = `ПОСЛЕДНИЙ СУНДУК: ${day}.${month} - ${hours}:${minutes} - ${itemLabel}`;
+
+            document.getElementById('last-event-log').innerText = logText;
+            localStorage.setItem('tb_last_event_log', logText);
+        }
+
         saveAndCalculate();
     }
 
@@ -455,6 +510,12 @@
             });
         });
 
+        // Загрузка последнего события
+        const savedLog = localStorage.getItem('tb_last_event_log');
+        if (savedLog) {
+            document.getElementById('last-event-log').innerText = savedLog;
+        }
+
         saveAndCalculate();
     }
 
@@ -466,6 +527,8 @@
                     localStorage.removeItem(`tb_chest_${item.id}`);
                 });
             });
+            localStorage.removeItem('tb_last_event_log');
+            document.getElementById('last-event-log').innerText = 'ПОСЛЕДНИЙ СУНДУК: Нет данных';
             saveAndCalculate();
         }
     }
